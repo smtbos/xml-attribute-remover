@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<products>
+  <product category="Mens clothing" code="000-01" name="t-shirt" description="100% Cotton" quntity="5" unitprice="299" />
+  <product category="Mens clothing" code="000-02" name="shirt" description="100% Cotton" quntity="5" unitprice="249" />
+  <product category="Mens footwear" code="001-05" name="sneakers" description="100% Leather" quntity="5" unitprice="499" />
+  <product category="Mens footwear" code="001-06" name="formal shoes" description="100% Leather" quntity="4" unitprice="399" />
+  <product category="Mens footwear" code="001-07" name="casual shoes" description="100% Leather" quntity="3" unitprice="299" />
+  <product category="Mens footwear" code="001-08" name="sandals" description="100% Leather" quntity="2" unitprice="199" />
+  <product category="Mens footwear" code="001-09" name="slippers" description="100% Leather" quntity="1" unitprice="99" />
+  <product category="Mens accessories" code="002-10" name="belt" description="100% Leather" quntity="5" unitprice="99" />
+  <product category="Mens accessories" code="002-11" name="wallet" description="100% Leather" quntity="5" unitprice="199" />
+  <product category="Mens accessories" code="002-12" name="tie" description="100% Cotton" quntity="5" unitprice="99" />
+  <product category="Mens accessories" code="002-13" name="cufflinks" description="100% Metal" quntity="5" unitprice="299" />
+  <product category="Mens accessories" code="002-14" name="watch" description="100% Metal" quntity="5" unitprice="499" />
+  <product category="Mens accessories" code="002-15" name="sunglasses" description="100% Plastic" quntity="5" unitprice="199" />
+</products>

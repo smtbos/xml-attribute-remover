@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="public/bootstrap.min.css" />
+</head>
+
+<body>
+    <div class="container">
+        <div class="col-12 text-center pt-5">
+            <h3>Remove Attributes of Products from XML.</h3>
+        </div>
+        <div class="row">
+            <div class="col-xl-4 offset-xl-4 col-lg-6 offset-lg-3 col-md-8 offset-md-2 pt-4">
+                <div class="row">
+                    <div class="col-12">
+                        <label for="formFile" class="form-label fw-bold">Select XML File:</label>
+                        <input class="form-control" type="file" name="sourcexml" id="sourcexml">
+                    </div>
+                </div>
+                <div class="row" id="process_container" style="display: none;">
+                    <div class="col-12 pt-4">
+                        <h6 class="fw-bold">Select Items to export</h6>
+                    </div>
+                    <div class="col-12" id="checkbox_container">
+                    </div>
+                    <div class="col-12 pb-3 pt-4">
+                        <div class="row">
+                            <div class="col-4 pe-1">
+                                <button id="select_all" class="btn btn-outline-success btn-sm w-100">Select All</button>
+                            </div>
+                            <div class="col-4 ">
+                                <button id="unselect_all" class="btn btn-outline-danger btn-sm w-100">Unselect
+                                    All</button>
+                            </div>
+                            <div class="col-4 ps-1">
+                                <button id="toggle" class="btn btn-outline-warning btn-sm w-100">Toggle</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="row">
+                            <div class="col-6 offset-3">
+                                <button class="btn btn-primary w-100" id="exportbrn">Export</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        function download(filename, text) {
+            var element = document.createElement('a');
+            element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+            element.setAttribute('download', filename);
+            element.style.display = 'none';
+            document.body.appendChild(element);
+            element.click();
+            document.body.removeChild(element);
+        }
+
+        function get_checkbox(val) {
+            var div = document.createElement('div');
+            div.className = "form-check form-switch";
+
+
+            var checkbox = document.createElement('input');
+            checkbox.className = "form-check-input";
+            checkbox.type = "checkbox";
+            checkbox.role = "switch"
+            checkbox.name = "attributes";
+            checkbox.value = val;
+            checkbox.class = "attributes"
+            checkbox.id = val;
+            checkbox.checked = true;
+            div.appendChild(checkbox);
+
+            label = document.createElement("label");
+            label.className = "form-check-label";
+            label.for = val;
+            label.innerHTML = val.charAt(0).toUpperCase() + val.slice(1);;
+            div.appendChild(label);
+
+            return div;
+        }
+
+        var file_name, file_new_name, sourcexml, parser, xmltext, xmldoc, sourceattributes, checkbox_container, exportbrn, process_container, select_all, unselect_all, toggle
+        parser = new DOMParser();
+
+        sourcexml = document.getElementById("sourcexml");
+        checkbox_container = document.getElementById("checkbox_container");
+        exportbrn = document.getElementById("exportbrn");
+        process_container = document.getElementById("process_container");
+
+        select_all = document.getElementById("select_all");
+        unselect_all = document.getElementById("unselect_all");
+        toggle = document.getElementById("toggle");
+
+        sourcexml.addEventListener("change", function () {
+            var file = sourcexml.files[0];
+            var reader = new FileReader();
+            reader.onload = function () {
+                var xmltext = reader.result;
+                xmldoc = parser.parseFromString(xmltext, "text/xml");
+                sourceattributes = xmldoc.getElementsByTagName("product")[0].getAttributeNames();
+                checkbox_container.innerHTML = "";
+                for (var i = 0; i < sourceattributes.length; i++) {
+                    console.log(sourceattributes[i]);
+                    checkbox_container.appendChild(get_checkbox(sourceattributes[i]));
+                }
+                process_container.style.display = "block";
+            }
+            file_name = file.name;
+            file_new_name = file_name.replace(".xml", " new.xml")
+            reader.readAsText(file);
+        });
+
+        exportbrn.addEventListener("click", function () {
+            checkboxes = document.getElementsByName("attributes");
+            var destinationxml = '<?xml version="1.0" encoding="utf-8" ?>';
+            var products = document.createElement("products");
+            var selectedAttributes = [];
+            for (var i = 0; i < checkboxes.length; i++) {
+                if (checkboxes[i].checked) {
+                    selectedAttributes.push(checkboxes[i].value);
+                }
+            }
+            for (var i = 0; i < xmldoc.getElementsByTagName("product").length; i++) {
+                var product = document.createElement("product");
+                for (var j = 0; j < selectedAttributes.length; j++) {
+                    product.setAttribute(selectedAttributes[j], xmldoc.getElementsByTagName("product")[i].getAttribute(selectedAttributes[j]));
+                }
+                console.log(product);
+                products.appendChild(product);
+            }
+            destinationxml += products.outerHTML;
+            download(file_new_name, destinationxml);
+        });
+
+        select_all.addEventListener("click", function () {
+            checkboxes = document.getElementsByName("attributes");
+            for (var i = 0; i < checkboxes.length; i++) {
+                checkboxes[i].checked = true;
+            }
+        });
+        unselect_all.addEventListener("click", function () {
+            checkboxes = document.getElementsByName("attributes");
+            for (var i = 0; i < checkboxes.length; i++) {
+                checkboxes[i].checked = false;
+            }
+        });
+        toggle.addEventListener("click", function () {
+            checkboxes = document.getElementsByName("attributes");
+            for (var i = 0; i < checkboxes.length; i++) {
+                checkboxes[i].checked = !checkboxes[i].checked;
+            }
+        });
+    </script>
+</body>
+
+</html>
